@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ScrollView, Text, View, Pressable, ActivityIndicator } from 'react-native';
 import DonutChart from '@/components/DonutChart';
+import SmallDonutChart from '@/components/SmallDonutChart'
 import { useFont } from '@shopify/react-native-skia';
 import { useSharedValue, withTiming } from 'react-native-reanimated';
 import { calculatePercentage } from '@/utils/calculatePercentage';
@@ -43,8 +44,8 @@ export const Home = () => {
   };
 
   // Loading fonts
-  const font = useFont(require('C:\\Users\\mouto\\OneDrive\\Desktop\\app1\\budget\\assets\\fonts\\Roboto-Bold.ttf'), 60);
-  const smallFont = useFont(require('C:\\Users\\mouto\\OneDrive\\Desktop\\app1\\budget\\assets\\fonts\\Roboto-Light.ttf'), 25);
+  const font = useFont(require('@/assets/fonts/Roboto-Bold.ttf'), 60);
+  const smallFont = useFont(require('@/assets/fonts/Roboto-Light.ttf'), 25);
 
   // Handle loading state
   if (!font || !smallFont) {
@@ -72,9 +73,106 @@ export const Home = () => {
             colors={colors}
           />
         </View>
-        {data.map((item, index) => (
+        
+        <Text style={{ color:"white", paddingBottom: 50, paddingTop: 20}}>Expense Breakdown</Text>
+
+        <Text style={{ color:"white" }}>Food</Text>
+
+        <View style={{ width: '90%', height: 120, marginTop: 20 }}>
+          <SmallDonutChart
+            radius={60}
+            gap={0.04}
+            strokeWidth={11}
+            outerStrokeWidth={25}
+            font={smallFont}
+            smallFont={smallFont}
+            totalValue={totalValue}
+            n={n}
+            decimals={decimals}
+            colors={colors}
+            highlightIndex={0}
+            label={""}
+          />
+        </View>
+
+        <Text style={{ color:"white" }}>Transportation</Text>
+
+        <View style={{ width: '90%', height: 120, marginTop: 20 }}>
+          <SmallDonutChart
+            radius={60}
+            gap={0.04}
+            strokeWidth={11}
+            outerStrokeWidth={25}
+            font={smallFont}
+            smallFont={smallFont}
+            totalValue={totalValue}
+            n={n}
+            decimals={decimals}
+            colors={colors}
+            highlightIndex={1}
+            label={""}
+          />
+        </View>
+
+        <Text style={{ color:"white" }}>Shopping</Text>
+
+        <View style={{ width: '90%', height: 120, marginTop: 20 }}>
+          <SmallDonutChart
+            radius={60}
+            gap={0.04}
+            strokeWidth={11}
+            outerStrokeWidth={25}
+            font={smallFont}
+            smallFont={smallFont}
+            totalValue={totalValue}
+            n={n}
+            decimals={decimals}
+            colors={colors}
+            highlightIndex={2}
+            label={""}
+          />
+        </View>
+
+        <Text style={{ color:"white" }}>Utilities</Text>
+
+        <View style={{ width: '90%', height: 120, marginTop: 20 }}>
+          <SmallDonutChart
+            radius={60}
+            gap={0.04}
+            strokeWidth={11}
+            outerStrokeWidth={25}
+            font={smallFont}
+            smallFont={smallFont}
+            totalValue={totalValue}
+            n={n}
+            decimals={decimals}
+            colors={colors}
+            highlightIndex={3}
+            label={""}
+          />
+        </View>
+
+        <Text style={{ color:"white" }}>Entertainment</Text>
+
+        <View style={{ width: '90%', height: 120, marginTop: 20 }}>
+          <SmallDonutChart
+            radius={60}
+            gap={0.04}
+            strokeWidth={11}
+            outerStrokeWidth={25}
+            font={smallFont}
+            smallFont={smallFont}
+            totalValue={totalValue}
+            n={n}
+            decimals={decimals}
+            colors={colors}
+            highlightIndex={4}
+            label={""}
+          />
+        </View>
+        {/* {data.map((item, index) => (
           <RenderItem item={item} key={index} index={index} />
-        ))}
+        ))} */}
         <Pressable
           onPress={generateData}
           style={{

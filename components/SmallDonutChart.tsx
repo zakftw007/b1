@@ -15,9 +15,11 @@ type Props = {
   totalValue: SharedValue<number>;
   font: SkFont;
   smallFont: SkFont;
+  label?: string; // NEW: customizable center label
+  highlightIndex?: number; // NEW: optional highlighted segment
 };
 
-const DonutChart = ({
+const SmallDonutChart = ({
   n,
   gap,
   decimals,
@@ -28,6 +30,8 @@ const DonutChart = ({
   radius,
   font,
   smallFont,
+  label = 'Total Spent',
+  highlightIndex,
 }: Props) => {
   const array = Array.from({length: n});
   const innerRadius = radius - outerStrokeWidth / 2;
@@ -37,16 +41,16 @@ const DonutChart = ({
 
   const targetText = useDerivedValue(
     () => `$${Math.round(totalValue.value)}`,
-    [],
+    [totalValue],
   );
 
   const fontSize = font.measureText('$00');
-  const smallFontSize = smallFont.measureText('Total Spent');
+  const smallFontSize = smallFont.measureText(label);
 
   const textX = useDerivedValue(() => {
     const _fontSize = font.measureText(targetText.value);
     return radius - _fontSize.width / 2;
-  }, []);
+  }, [targetText]);
 
   return (
     <View style={styles.container}>
@@ -62,13 +66,21 @@ const DonutChart = ({
           end={1}
         />
         {array.map((_, index) => {
+          const isHighlighting =
+            highlightIndex !== undefined && highlightIndex !== null;
+          const color = isHighlighting
+            ? index === highlightIndex
+              ? colors[index] // full color
+              : `${colors[index]}55` // muted version
+            : colors[index]; // default: all full color
+
           return (
             <DonutPath
               key={index}
               radius={radius}
               strokeWidth={strokeWidth}
               outerStrokeWidth={outerStrokeWidth}
-              color={colors[index]}
+              color={color}
               decimals={decimals}
               index={index}
               gap={gap}
@@ -78,8 +90,7 @@ const DonutChart = ({
         <Text
           x={radius - smallFontSize.width / 2}
           y={radius + smallFontSize.height / 2 - fontSize.height / 1.2}
-          //y={radius - 160}
-          text={'Total Spent'}
+          text={label}
           font={smallFont}
           color="white"
         />
@@ -95,7 +106,7 @@ const DonutChart = ({
   );
 };
 
-export default DonutChart;
+export default SmallDonutChart;
 
 const styles = StyleSheet.create({
   container: {
