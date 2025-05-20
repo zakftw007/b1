@@ -1,7 +1,7 @@
-import {StyleSheet, View} from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import React from 'react';
-import {SharedValue, useDerivedValue} from 'react-native-reanimated';
-import {Canvas, Path, SkFont, Skia, Text} from '@shopify/react-native-skia';
+import { SharedValue, useDerivedValue } from 'react-native-reanimated';
+import { Canvas, Path, SkFont, Skia, Text } from '@shopify/react-native-skia';
 import DonutPath from './DonutPath';
 
 type Props = {
@@ -29,7 +29,7 @@ const DonutChart = ({
   font,
   smallFont,
 }: Props) => {
-  const array = Array.from({length: n});
+  const array = Array.from({ length: n });
   const innerRadius = radius - outerStrokeWidth / 2;
 
   const path = Skia.Path.Make();

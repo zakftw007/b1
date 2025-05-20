@@ -1,115 +1,124 @@
-import {StyleSheet, View} from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import React from 'react';
-import {SharedValue, useDerivedValue} from 'react-native-reanimated';
-import {Canvas, Path, SkFont, Skia, Text} from '@shopify/react-native-skia';
+import { SharedValue, useDerivedValue, useSharedValue, withTiming } from 'react-native-reanimated';
+import { Canvas, Path, SkFont, Skia, Text } from '@shopify/react-native-skia';
 import DonutPath from './DonutPath';
 
 type Props = {
-  n: number;
-  gap: number;
-  radius: number;
-  strokeWidth: number;
-  outerStrokeWidth: number;
-  decimals: SharedValue<number[]>;
-  colors: string[];
-  totalValue: SharedValue<number>;
-  font: SkFont;
-  smallFont: SkFont;
-  label?: string; // NEW: customizable center label
-  highlightIndex?: number; // NEW: optional highlighted segment
+    n: number;
+    gap: number;
+    radius: number;
+    strokeWidth: number;
+    outerStrokeWidth: number;
+    decimals: SharedValue<number[]>;
+    colors: string[];
+    totalValue: SharedValue<number>;
+    font: SkFont;
+    smallFont: SkFont;
+    label?: string; // Customizable center label
+    highlightIndex?: number; // Optional highlighted segment
 };
 
 const SmallDonutChart = ({
-  n,
-  gap,
-  decimals,
-  colors,
-  totalValue,
-  strokeWidth,
-  outerStrokeWidth,
-  radius,
-  font,
-  smallFont,
-  label = 'Total Spent',
-  highlightIndex,
+    n,
+    gap,
+    decimals,
+    colors,
+    totalValue,
+    strokeWidth,
+    outerStrokeWidth,
+    radius,
+    font,
+    smallFont,
+    label = 'Total Spent',
+    highlightIndex,
 }: Props) => {
-  const array = Array.from({length: n});
-  const innerRadius = radius - outerStrokeWidth / 2;
+    const array = Array.from({ length: n });
+    const innerRadius = radius - outerStrokeWidth / 2;
 
-  const path = Skia.Path.Make();
-  path.addCircle(radius, radius, innerRadius);
+    const path = Skia.Path.Make();
+    path.addCircle(radius, radius, innerRadius);
 
-  const targetText = useDerivedValue(
-    () => `$${Math.round(totalValue.value)}`,
-    [totalValue],
-  );
+    const animatedPercent = useSharedValue(0);
 
-  const fontSize = font.measureText('$00');
-  const smallFontSize = smallFont.measureText(label);
+    useDerivedValue(() => {
+        if (
+            highlightIndex !== undefined &&
+            highlightIndex !== null &&
+            decimals.value.length > highlightIndex
+        ) {
+            const target = decimals.value[highlightIndex] * 100;
+            animatedPercent.value = withTiming(target, { duration: 1000 });
+        } else {
+            animatedPercent.value = withTiming(0, { duration: 1000 });
+        }
+    }, [highlightIndex, decimals]);
 
-  const textX = useDerivedValue(() => {
-    const _fontSize = font.measureText(targetText.value);
-    return radius - _fontSize.width / 2;
-  }, [targetText]);
+    const targetText = useDerivedValue(() => {
+        return `${Math.round(animatedPercent.value)}%`;
+    });
 
-  return (
-    <View style={styles.container}>
-      <Canvas style={styles.container}>
-        <Path
-          path={path}
-          color="#121212"
-          style="stroke"
-          strokeJoin="round"
-          strokeWidth={outerStrokeWidth}
-          strokeCap="round"
-          start={0}
-          end={1}
-        />
-        {array.map((_, index) => {
-          const isHighlighting =
-            highlightIndex !== undefined && highlightIndex !== null;
-          const color = isHighlighting
-            ? index === highlightIndex
-              ? colors[index] // full color
-              : `${colors[index]}55` // muted version
-            : colors[index]; // default: all full color
+    const textX = useDerivedValue(() => {
+        const measurement = font.measureText(targetText.value);
+        return radius - measurement.width / 2;
+    }, [targetText]);
 
-          return (
-            <DonutPath
-              key={index}
-              radius={radius}
-              strokeWidth={strokeWidth}
-              outerStrokeWidth={outerStrokeWidth}
-              color={color}
-              decimals={decimals}
-              index={index}
-              gap={gap}
-            />
-          );
-        })}
-        <Text
-          x={radius - smallFontSize.width / 2}
-          y={radius + smallFontSize.height / 2 - fontSize.height / 1.2}
-          text={label}
-          font={smallFont}
-          color="white"
-        />
-        <Text
-          x={textX}
-          y={radius + fontSize.height / 2}
-          text={targetText}
-          font={font}
-          color="white"
-        />
-      </Canvas>
-    </View>
-  );
+    const textY = useDerivedValue(() => {
+        const measurement = font.measureText(targetText.value);
+        return radius + measurement.height / 3; // vertically center, tweak if needed
+    }, [targetText]);
+
+    return (
+        <View style={styles.container}>
+            <Canvas style={styles.container}>
+                <Path
+                    path={path}
+                    color="#121212"
+                    style="stroke"
+                    strokeJoin="round"
+                    strokeWidth={outerStrokeWidth}
+                    strokeCap="round"
+                    start={0}
+                    end={1}
+                />
+                {array.map((_, index) => {
+                    const isHighlighting =
+                        highlightIndex !== undefined && highlightIndex !== null;
+                    const color = isHighlighting
+                        ? index === highlightIndex
+                            ? colors[index] // full color
+                            : `${colors[index]}55` // muted version
+                        : colors[index]; // default: all full color
+
+                    return (
+                        <DonutPath
+                            key={index}
+                            radius={radius}
+                            strokeWidth={strokeWidth}
+                            outerStrokeWidth={outerStrokeWidth}
+                            color={color}
+                            decimals={decimals}
+                            index={index}
+                            gap={gap}
+                        />
+                    );
+                })}
+                <Text
+                    x={textX}
+                    y={textY}
+                    text={targetText}
+                    font={font}
+                    color="white"
+                />
+            </Canvas>
+        </View>
+    );
 };
 
 export default SmallDonutChart;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
+    container: {
+        flex: 1,
+    },
 });

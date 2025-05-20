@@ -73,10 +73,10 @@ export const Home = () => {
             colors={colors}
           />
         </View>
-        
-        <Text style={{ color:"white", paddingBottom: 50, paddingTop: 20}}>Expense Breakdown</Text>
 
-        <Text style={{ color:"white" }}>Food</Text>
+        <Text style={{ color: "white", paddingBottom: 30, paddingTop: 20, fontFamily: 'Roboto-Bold', fontSize: 20 }}>Expense Breakdown</Text>
+
+        <Text style={{ color: "white", fontFamily: 'Roboto-Bold', fontSize: 20 }}>Food</Text>
 
         <View style={{ width: '90%', height: 120, marginTop: 20 }}>
           <SmallDonutChart
@@ -95,7 +95,7 @@ export const Home = () => {
           />
         </View>
 
-        <Text style={{ color:"white" }}>Transportation</Text>
+        <Text style={{ color: "white", fontFamily: 'Roboto-Bold', fontSize: 20, paddingTop: 20 }}>Transportation</Text>
 
         <View style={{ width: '90%', height: 120, marginTop: 20 }}>
           <SmallDonutChart
@@ -114,7 +114,7 @@ export const Home = () => {
           />
         </View>
 
-        <Text style={{ color:"white" }}>Shopping</Text>
+        <Text style={{ color: "white", fontFamily: 'Roboto-Bold', fontSize: 20, paddingTop: 20 }}>Shopping</Text>
 
         <View style={{ width: '90%', height: 120, marginTop: 20 }}>
           <SmallDonutChart
@@ -133,7 +133,7 @@ export const Home = () => {
           />
         </View>
 
-        <Text style={{ color:"white" }}>Utilities</Text>
+        <Text style={{ color: "white", fontFamily: 'Roboto-Bold', fontSize: 20, paddingTop: 20 }}>Utilities</Text>
 
         <View style={{ width: '90%', height: 120, marginTop: 20 }}>
           <SmallDonutChart
@@ -152,7 +152,7 @@ export const Home = () => {
           />
         </View>
 
-        <Text style={{ color:"white" }}>Entertainment</Text>
+        <Text style={{ color: "white", fontFamily: 'Roboto-Bold', fontSize: 20, paddingTop: 20 }}>Entertainment</Text>
 
         <View style={{ width: '90%', height: 120, marginTop: 20 }}>
           <SmallDonutChart
